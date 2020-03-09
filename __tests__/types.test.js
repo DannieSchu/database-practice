@@ -6,6 +6,7 @@ const {
   isObject,
   isFunction,
   castToNumber,
+  castToString,
   getCaster
 } = require('../lib/types.js');
   
@@ -14,10 +15,10 @@ describe('validator module', () => {
     it('properly tells if a value is a number', () => {
       expect(isNumber(3)).toBeTruthy();
       expect(isNumber('hi')).toBeFalsy();
+      expect(isNumber(true)).toBeFalsy();
       expect(isNumber([])).toBeFalsy();
       expect(isNumber({})).toBeFalsy();
       expect(isNumber(() => {})).toBeFalsy();
-      expect(isNumber(true)).toBeFalsy();
     });
   });
   
@@ -25,10 +26,10 @@ describe('validator module', () => {
     it('tells if a value is a number', () => {
       expect(isString('hi')).toBeTruthy();
       expect(isString(5)).toBeFalsy();
+      expect(isString(true)).toBeFalsy();
       expect(isString([])).toBeFalsy();
       expect(isString({})).toBeFalsy();
       expect(isString(() => {})).toBeFalsy();
-      expect(isString(true)).toBeFalsy();
     });
   });
   
@@ -36,10 +37,10 @@ describe('validator module', () => {
     it('tells if a value is a boolean', () => {
       expect(isBoolean('hi')).toBeFalsy();
       expect(isBoolean(5)).toBeFalsy();
+      expect(isBoolean(true)).toBeTruthy();
       expect(isBoolean([])).toBeFalsy();
       expect(isBoolean({})).toBeFalsy();
       expect(isBoolean(() => {})).toBeFalsy();
-      expect(isBoolean(true)).toBeTruthy();
     });
   });
 
@@ -47,10 +48,10 @@ describe('validator module', () => {
     it('tells if a value is an array', () => {
       expect(isArray('hi')).toBeFalsy();
       expect(isArray(5)).toBeFalsy();
+      expect(isArray(true)).toBeFalsy();
       expect(isArray([])).toBeTruthy();
       expect(isArray({})).toBeFalsy();
       expect(isArray(() => {})).toBeFalsy();
-      expect(isArray(true)).toBeFalsy();
     });
   });
 
@@ -58,21 +59,21 @@ describe('validator module', () => {
     it('tells if a value is an object', () => {
       expect(isObject('hi')).toBeFalsy();
       expect(isObject(5)).toBeFalsy();
+      expect(isObject(true)).toBeFalsy();
       expect(isObject([])).toBeFalsy();
       expect(isObject({})).toBeTruthy();
       expect(isObject(() => {})).toBeFalsy();
-      expect(isObject(true)).toBeFalsy();
     });
   });
 
-  describe('basic validation of Function', () => {
-    it('tells if a value is an Function', () => {
+  describe('basic validation of function', () => {
+    it('tells if a value is an function', () => {
       expect(isFunction('hi')).toBeFalsy();
       expect(isFunction(5)).toBeFalsy();
+      expect(isFunction(true)).toBeFalsy();
       expect(isFunction([])).toBeFalsy();
       expect(isFunction({})).toBeFalsy();
       expect(isFunction(() => {})).toBeTruthy();
-      expect(isFunction(true)).toBeFalsy();
     });
   });
 
@@ -93,5 +94,18 @@ describe('validator module', () => {
   it('can get the right caster', () => {
     expect(getCaster(Number)).toEqual(castToNumber);
     expect(getCaster(Promise)).toBeNull();
+  });
+
+  describe('casters', () => {
+    it('can cast values to a string', () => {
+      expect(castToString('hi')).toEqual('hi');
+      expect(castToString(3)).toEqual('3');
+      expect(castToString(true)).toEqual('true');
+    });
+  
+    it('throws if value is not castable to string', () => {
+      expect(() => castToString({})).toThrowErrorMatchingSnapshot();
+      // expect(() => castToString([])).toThrowErrorMatchingSnapshot();
+    });
   });
 });
