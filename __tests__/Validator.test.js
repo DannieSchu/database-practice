@@ -64,4 +64,16 @@ describe('Validator', () => {
     };
     expect(() => nameValidator.validate(dog).toThrowError('Missing required field >>name<<'));
   });
+
+  it('returns null if optional value is missing', () => {
+    const nameValidator = new Validator('name', {
+      type: String,
+      required: false
+    });  
+    const dog = {
+      age: 23,
+      weight: '15 lbs'
+    };
+    expect(nameValidator.validate(dog)).toEqual(null);
+  });
 });
