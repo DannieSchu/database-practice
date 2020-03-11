@@ -1,67 +1,80 @@
-const Validator = require('../lib/Validator.js');
+const Validator = require('../lib/Validator');
 
 describe('Validator', () => {
-  let nameValidator;
+  let validator;
 
-  beforeEach(() => {
-    nameValidator = new Validator('name', {
-      type: String,
-      required: true
+  describe('required fields', () => {
+    beforeAll(() => {
+      validator = new Validator('age', {
+        type: Number,
+        required: true
+      });
+    });
+
+    it('returns the field', () => {
+      const dog = {
+        name: 'spot',
+        age: 5,
+        weight: '20 lbs'
+      };
+
+      expect(validator.validate(dog)).toEqual(5);
+    });
+
+    it('returns the field cast to type', () => {
+      const dog = {
+        name: 'spot',
+        age: '5',
+        weight: '20 lbs'
+      };
+
+      expect(validator.validate(dog)).toEqual(5);
+    });
+
+    it('returns the field', () => {
+      const dog = {
+        name: 'spot',
+        weight: '20 lbs'
+      };
+
+      expect(() => validator.validate(dog)).toThrowErrorMatchingSnapshot();
     });
   });
 
-  it('has field and configuration properties', () => {
-    expect(nameValidator.field).toEqual('name');
-    expect(nameValidator.configuration).toEqual({
-      type: String,
-      required: true
+  describe('optional fields', () => {
+    beforeAll(() => {
+      validator = new Validator('age', {
+        type: Number
+      });
     });
-  });
 
-  it('can validate an object of the proper type', () => {
-    const dog = {
-      name: 'Hobbes',
-      age: 23,
-      weight: '15 lbs'
-    };
-    expect(nameValidator.validate(dog)).toEqual('Hobbes');
-  });
+    it('returns the field', () => {
+      const dog = {
+        name: 'spot',
+        age: 5,
+        weight: '20 lbs'
+      };
 
-  it('can validate an object that is not proper type but is castable', () => {
-    const dog = {
-      name: 2,
-      age: 23,
-      weight: '15 lbs'
-    };
-    expect(nameValidator.validate(dog)).toEqual('2');
-  });
+      expect(validator.validate(dog)).toEqual(5);
+    });
 
-  it('throws an error when object is wrong type and not castable', () => {
-    const dog = {
-      name: {},
-      age: 23,
-      weight: '15 lbs'
-    };
-    expect(() => nameValidator.validate(dog).toThrowError('Cannot cast >>[object Object]<< to String'));
-  });
+    it('returns the field cast to type', () => {
+      const dog = {
+        name: 'spot',
+        age: '5',
+        weight: '20 lbs'
+      };
 
-  it('throws an error when validating if a required value is missing', () => {  
-    const dog = {
-      age: 23,
-      weight: '15 lbs'
-    };
-    expect(() => nameValidator.validate(dog).toThrowError('Missing required field >>name<<'));
-  });
+      expect(validator.validate(dog)).toEqual(5);
+    });
 
-  it('returns null if optional value is missing', () => {
-    const nameValidator = new Validator('name', {
-      type: String,
-      required: false
-    });  
-    const dog = {
-      age: 23,
-      weight: '15 lbs'
-    };
-    expect(nameValidator.validate(dog)).toEqual(null);
+    it('returns the field', () => {
+      const dog = {
+        name: 'spot',
+        weight: '20 lbs'
+      };
+
+      expect(validator.validate(dog)).toBeNull();
+    });
   });
 });
