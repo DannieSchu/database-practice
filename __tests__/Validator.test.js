@@ -37,6 +37,31 @@ describe('Validator', () => {
       age: 23,
       weight: '15 lbs'
     };
+    expect(nameValidator.validate(dog)).toEqual('2');
   });
 
+  it('throws an error when object is wrong type and not castable', () => {
+    const nameValidator = new Validator('name', {
+      type: String,
+      required: true
+    });  
+    const dog = {
+      name: {},
+      age: 23,
+      weight: '15 lbs'
+    };
+    expect(() => nameValidator.validate(dog).toThrowError('Cannot cast >>[object Object]<< to String'));
+  });
+
+  it('throws an error when validating if a required value is missing', () => {
+    const nameValidator = new Validator('name', {
+      type: String,
+      required: true
+    });  
+    const dog = {
+      age: 23,
+      weight: '15 lbs'
+    };
+    expect(() => nameValidator.validate(dog).toThrowError('Missing required field >>name<<'));
+  });
 });
