@@ -25,5 +25,18 @@ describe('Validator', () => {
       weight: '15 lbs'
     };
     expect(nameValidator.validate(dog)).toEqual('Hobbes');
-  })
+  });
+
+  it('can validate an object that is not proper type but is castable', () => {
+    const nameValidator = new Validator('name', {
+      type: String,
+      required: true
+    });  
+    const dog = {
+      name: 2,
+      age: 23,
+      weight: '15 lbs'
+    };
+  });
+
 });
