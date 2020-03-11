@@ -1,13 +1,17 @@
 const Schema = require('../lib/Schema.js');
 
 describe('Schema', () => {
-  it('returns object with all fields set', () => {
-    const dogSchema = new Schema('dog', {
+  let dogSchema;
+  
+  beforeEach(() => {
+    dogSchema = new Schema('dog', {
       name: String,
       age: Number,
       weight: String
     });
+  });
 
+  it('returns object with all fields set', () => {
     const spot = {
       name: 'spot',
       age: 5,
@@ -22,12 +26,6 @@ describe('Schema', () => {
   });
 
   it('returns object if optional values are missing', () => {
-    const dogSchema = new Schema('dog', {
-      name: String,
-      age: Number,
-      weight: String
-    });
-
     const rover = {
       name: 'rover',
       age: 5,
@@ -41,12 +39,6 @@ describe('Schema', () => {
 
 
   it('throws an error if object does not follow schema', () => {
-    const dogSchema = new Schema('dog', {
-      name: String,
-      age: Number,
-      weight: String
-    });
-
     const who = {
       age: 'hi'
     };

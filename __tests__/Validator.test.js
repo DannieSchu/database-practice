@@ -1,12 +1,16 @@
 const Validator = require('../lib/Validator.js');
 
 describe('Validator', () => {
-  it('has field and configuration properties', () => {
-    const nameValidator = new Validator('name', {
+  let nameValidator;
+
+  beforeEach(() => {
+    nameValidator = new Validator('name', {
       type: String,
       required: true
     });
-    
+  });
+
+  it('has field and configuration properties', () => {
     expect(nameValidator.field).toEqual('name');
     expect(nameValidator.configuration).toEqual({
       type: String,
@@ -15,10 +19,6 @@ describe('Validator', () => {
   });
 
   it('can validate an object of the proper type', () => {
-    const nameValidator = new Validator('name', {
-      type: String,
-      required: true
-    });
     const dog = {
       name: 'Hobbes',
       age: 23,
@@ -28,10 +28,6 @@ describe('Validator', () => {
   });
 
   it('can validate an object that is not proper type but is castable', () => {
-    const nameValidator = new Validator('name', {
-      type: String,
-      required: true
-    });  
     const dog = {
       name: 2,
       age: 23,
@@ -41,10 +37,6 @@ describe('Validator', () => {
   });
 
   it('throws an error when object is wrong type and not castable', () => {
-    const nameValidator = new Validator('name', {
-      type: String,
-      required: true
-    });  
     const dog = {
       name: {},
       age: 23,
@@ -53,11 +45,7 @@ describe('Validator', () => {
     expect(() => nameValidator.validate(dog).toThrowError('Cannot cast >>[object Object]<< to String'));
   });
 
-  it('throws an error when validating if a required value is missing', () => {
-    const nameValidator = new Validator('name', {
-      type: String,
-      required: true
-    });  
+  it('throws an error when validating if a required value is missing', () => {  
     const dog = {
       age: 23,
       weight: '15 lbs'
