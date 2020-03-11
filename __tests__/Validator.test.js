@@ -1,7 +1,7 @@
-const { Validator } = require('../lib/Validator.js');
+const Validator = require('../lib/Validator.js');
 
-describe('validator', () => {
-  it('has field and constructor properties', () => {
+describe('Validator', () => {
+  it('has field and configuration properties', () => {
     const nameValidator = new Validator('name', {
       type: String,
       required: true
