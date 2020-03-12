@@ -95,9 +95,11 @@ describe('file system functions', () => {
         });
         });
     });
+
     it('deletes a file', () => {
       return deleteJSON('./test.json')
         .then(() => {
+          // ensure that unlink gets called with right arguments
           expect(fs.unlink)
             .toHaveBeenCalledWith('./test.json');
         });
