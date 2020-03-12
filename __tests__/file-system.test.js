@@ -1,12 +1,16 @@
 /* eslint-disable indent */
 const fs = require('fs').promises;
-const { mkdirp } = require('../lib/file-system.js');
+const { 
+  mkdirp, 
+  writeJSON 
+} = require('../lib/file-system.js');
 
 // set up jest.mock() functions that each return a promise 
 jest.mock('fs', () => ({
   // create promises
   promises: {
-    mkdir: jest.fn(() => Promise.resolve())
+    mkdir: jest.fn(() => Promise.resolve()),
+    writeFile: jest.fn(() => Promise.resolve())
     }
 }));
 
@@ -21,4 +25,19 @@ describe('file system functions', () => {
         expect(fs.mkdir).toHaveBeenCalledWith('./file-directory', { recursive: true });
       });
     });
+
+    it('writes a file', () => {
+      const dog = {
+        name: 'Hobbes',
+        age: 20,
+        weight: '20 lbs'
+      };
+      // return function
+      return writeJSON('./test.json', dog)
+        // check that called with correct arguments
+      .then(() => {
+        expect(fs.writeFile).toHaveBeenCalledWith('./test.json', JSON.stringify(dog));
+      });
+    });
   });
+
