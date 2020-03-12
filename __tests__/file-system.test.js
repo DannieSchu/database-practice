@@ -1,32 +1,24 @@
 /* eslint-disable indent */
 const fs = require('fs').promises;
-const { writeJSON } = require('../lib/file-system.js');
+const { mkdirp } = require('../lib/file-system.js');
 
-const dog = {
-  name: 'Hobbes',
-  age: 21,
-  weight: '15 lbs'
-};
+// set up jest.mock() functions that each return a promise 
+jest.mock('fs', () => ({
+  // create promises
+  promises: {
+    mkdir: jest.fn(() => Promise.resolve())
+    }
+}));
 
-describe('write function', () => {
-  afterEach(() => {
-    return fs.unlink('./json-file.txt');
-  });
-
-  it('writes a file', () => {
-    // promise: it writes this object at this file path...
-    return writeJSON('./json-file.txt', dog)
-      // if promise is fulfilled, it reads the file
-      .then(() => fs.readFile('./json-file.txt'))
-      .then((contents) => JSON.parse(contents))
-      // if it reads the file, it returns that result 
-      .then(result => {
-        expect(result).toEqual(
-          { name: 'Hobbes',
-            age: 21,
-            weight: '15 lbs' 
-          }
-        );
+// make directory and make sure directory exists
+describe('file system functions', () => {
+  it('makes a directory and all parent directories', () => {
+    // attempt to create path
+    return mkdirp('./file-directory')
+    // if directory exists
+      .then(() => {
+        // intercept fs with promise; expect that it will be called with appropriate arguments
+        expect(fs.mkdir).toHaveBeenCalledWith('./file-directory', { recursive: true });
       });
+    });
   });
-});
