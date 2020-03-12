@@ -2,7 +2,8 @@
 const fs = require('fs').promises;
 const { 
   mkdirp, 
-  writeJSON 
+  writeJSON, 
+  readJSON
 } = require('../lib/file-system.js');
 
 // set up jest.mock() functions that each return a promise 
@@ -10,7 +11,8 @@ jest.mock('fs', () => ({
   // create promises
   promises: {
     mkdir: jest.fn(() => Promise.resolve()),
-    writeFile: jest.fn(() => Promise.resolve())
+    writeFile: jest.fn(() => Promise.resolve()),
+    readFile: jest.fn(() => Promise.resolve('{"name": "Hobbes"}'))
     }
 }));
 
@@ -39,5 +41,16 @@ describe('file system functions', () => {
         expect(fs.writeFile).toHaveBeenCalledWith('./test.json', JSON.stringify(dog));
       });
     });
-  });
 
+    it('reads an object from a file', () => {
+      return readJSON('./test.json')
+      .then(results => {
+        // ensure that readFile is called with right arguments
+        expect(fs.readFile)
+          .toHaveBeenCalledWith('./test.json');
+          // ensure data is an object rather than a string
+        expect(results)
+          .toEqual({ name: 'Hobbes' });
+        });    
+    });
+  });
