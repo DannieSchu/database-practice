@@ -3,7 +3,8 @@ const fs = require('fs').promises;
 const { 
   mkdirp, 
   writeJSON, 
-  readJSON
+  readJSON,
+  readDirectoryJSON
 } = require('../lib/file-system.js');
 
 // set up jest.mock() functions that each return a promise 
@@ -12,7 +13,8 @@ jest.mock('fs', () => ({
   promises: {
     mkdir: jest.fn(() => Promise.resolve()),
     writeFile: jest.fn(() => Promise.resolve()),
-    readFile: jest.fn(() => Promise.resolve('{"name": "Hobbes"}'))
+    readFile: jest.fn(() => Promise.resolve('{"name": "Hobbes"}')),
+    readdir: jest.fn(() => Promise.resolve(['file-one.json', 'file-two.json']))
     }
 }));
 
@@ -44,7 +46,7 @@ describe('file system functions', () => {
 
     it('reads an object from a file', () => {
       return readJSON('./test.json')
-      .then(results => {
+        .then(results => {
         // ensure that readFile is called with right arguments
         expect(fs.readFile)
           .toHaveBeenCalledWith('./test.json');
@@ -52,5 +54,26 @@ describe('file system functions', () => {
         expect(results)
           .toEqual({ name: 'Hobbes' });
         });    
+    });
+    
+    it('reads a directory', () => {
+      return readDirectoryJSON('./file-directory')
+        .then(results => {
+          // ensure that readdir is called with right arguments
+          expect(fs.readdir)
+            .toHaveBeenCalledWith('./file-directory');
+            // ensure that readFile is called with right arguments
+          expect(fs.readFile)
+            .toHaveBeenCalledWith('./file-directory/file-one.json');
+          expect(fs.readFile)
+            .toHaveBeenCalledWith('./file-directory/file-two.json');
+            // ensure data takes right shape
+          expect(results)
+            .toEqual([
+              { name: 'Hobbes' }, 
+              { name: 'Hobbes' }
+            ]);
+        }
+      );
     });
   });
