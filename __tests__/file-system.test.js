@@ -5,7 +5,8 @@ const {
   writeJSON, 
   readJSON,
   readDirectoryJSON,
-  updateJSON
+  updateJSON,
+  deleteJSON
 } = require('../lib/file-system.js');
 
 // set up jest.mock() functions that each return a promise 
@@ -15,7 +16,8 @@ jest.mock('fs', () => ({
     mkdir: jest.fn(() => Promise.resolve()),
     writeFile: jest.fn(() => Promise.resolve()),
     readFile: jest.fn(() => Promise.resolve('{"name": "Hobbes"}')),
-    readdir: jest.fn(() => Promise.resolve(['file-one.json', 'file-two.json']))
+    readdir: jest.fn(() => Promise.resolve(['file-one.json', 'file-two.json'])),
+    unlink: jest.fn(() => Promise.resolve())
     }
 }));
 
@@ -91,6 +93,13 @@ describe('file system functions', () => {
         expect(results).toEqual({ 
           name: 'Hobbes' 
         });
+        });
+    });
+    it('deletes a file', () => {
+      return deleteJSON('./test.json')
+        .then(() => {
+          expect(fs.unlink)
+            .toHaveBeenCalledWith('./test.json');
         });
     });
   });
