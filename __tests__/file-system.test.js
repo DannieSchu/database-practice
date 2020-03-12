@@ -4,7 +4,8 @@ const {
   mkdirp, 
   writeJSON, 
   readJSON,
-  readDirectoryJSON
+  readDirectoryJSON,
+  updateJSON
 } = require('../lib/file-system.js');
 
 // set up jest.mock() functions that each return a promise 
@@ -75,5 +76,21 @@ describe('file system functions', () => {
             ]);
         }
       );
+    });
+
+    it('updates a file', () => {
+      return updateJSON('./test.json', { name: 'Hobbes' })
+      .then(results => {
+        // ensure that readFile gets called with right arguments
+        expect(fs.readFile)
+          .toHaveBeenCalledWith('./test.json');
+        // ensure that writeFile gets called with right arguments
+        expect(fs.writeFile)
+          .toHaveBeenCalledWith('./test.json', '{"name":"Hobbes"}');
+        // expect results to equal object with appropriate name
+        expect(results).toEqual({ 
+          name: 'Hobbes' 
+        });
+        });
     });
   });
