@@ -2,13 +2,27 @@
 const Model = require('../lib/Model');
 // get schema 
 const Schema = require('../lib/Schema');
-// const fs = require('fs');
+// const removeDir = require('../lib/file-system');
+
+// let schema;
 
 describe('Model class', () => {
-  // beforeEach(() => fs.rmdir('Dog', () => {
-  // })
-  // );
+  // beforeEach(() => removeDir('Dog'));
 
+  // beforeAll(() => {
+  //   schema = new Schema('name', {
+  //     type: String,
+  //     required: true
+  //   },
+  //   'age', {
+  //     type: Number,
+  //     required: true
+  //   },
+  //   'weight', {
+  //     type: String
+  //   }
+  //   );   
+  // });
   it('creates a new document', () => {
     const schema = new Schema({
       name: {
@@ -16,16 +30,16 @@ describe('Model class', () => {
         required: true
       },
       age: {
-        type: Number
+        type: Number,
+        required: true
       },
       weight: {
         type: String
       }
     });  
-
+    
     // Dog class is a new model with name 'Dog' in shape of schema
     const Dog = new Model('Dog', schema);
-
     return Dog 
     // create this instance of Dog class 
       .create({
@@ -51,7 +65,8 @@ describe('Model class', () => {
         required: true
       },
       age: {
-        type: Number
+        type: Number,
+        required: true
       },
       weight: {
         type: String
@@ -68,7 +83,6 @@ describe('Model class', () => {
         weight: '20 lbs'
       })      
       .then(dog => {
-        console.log(dog);
         return Dog 
           .findById(dog._id);
       })
@@ -79,6 +93,36 @@ describe('Model class', () => {
           age: 5,
           weight: '20 lbs'
         });
+      });
+  });
+
+  it('finds all dogs', () => {
+    const schema = new Schema({
+      name: {
+        type: String,
+        required: true
+      },
+      age: {
+        type: Number,
+        required: true
+      },
+      weight: {
+        type: String
+      }
+    });  
+
+    // Dog class is a new model with name 'Dog' in shape of schema
+    const Dog = new Model('Dog', schema);
+
+    return Dog
+      .find()
+      .then(allDogs => {
+        expect(allDogs).toEqual([{
+          _id: expect.any(String),
+          name: expect.any(String),
+          age: expect.any(Number),
+          weight: expect.any(String)
+        }]);
       });
   });
 });

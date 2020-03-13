@@ -25,7 +25,7 @@ Dog
     age: 5,
     weight: '20 lbs'
   })
-    .then(createdDog => console.log(createdDog));
+  .then(createdDog => console.log(createdDog));
 
 // R - READ MANY GET
 Dog
