@@ -173,4 +173,40 @@ describe('Model class', () => {
         });
       });
   });
+
+  it('deletes a dog', () => {
+    const schema = new Schema({
+      name: {
+        type: String,
+        required: true
+      },
+      age: {
+        type: Number,
+        required: true
+      },
+      weight: {
+        type: String
+      }
+    });  
+  
+    // Dog class is a new model with name 'Dog' in shape of schema
+    const Dog = new Model('Dog', schema);
+      
+    return Dog
+      .create({
+        name: 'spot',
+        age: 5,
+        weight: '20 lbs'
+      })
+      
+    // find all dogs      
+      .then(dog => {
+        return Dog
+          .findByIdAndDelete(dog._id);
+      })
+      
+      .then(deletedDog => {
+        expect(deletedDog).toBeUndefined;
+      });
+  });
 });
