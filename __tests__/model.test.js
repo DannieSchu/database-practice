@@ -1,15 +1,11 @@
 // get model
 const Model = require('../lib/Model');
 const Schema = require('../lib/Schema');
-const { clearDir } = require('../lib/file-system');
-
 
 describe('Model class', () => {
   let schema;
 
-  describe('Model methods', () => {
-    beforeEach(() => clearDir('Dog'));
-  
+  describe('Model methods', () => {  
     beforeAll(() => {
       schema = new Schema({
         name: {
